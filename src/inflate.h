@@ -7,6 +7,8 @@
    part of the implementation of the compression library and is
    subject to change. Applications should only use zlib.h.
  */
+#pragma once
+#include "zlib.h"
 
 /* define NO_GZIP when compiling if you want to disable gzip header and
    trailer decoding by inflate().  NO_GZIP would be used to avoid linking in
