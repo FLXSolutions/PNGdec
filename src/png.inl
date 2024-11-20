@@ -134,7 +134,7 @@ PNG_STATIC uint8_t PNGMakeMask(PNGDRAW *pDraw, uint8_t *pMask, uint8_t ucThresho
     uint8_t alpha, c, *s, *d, *pPal;
     uint8_t cHasOpaque = 0;
     int i, x;
-    
+
     switch (pDraw->iPixelType) {
         case PNG_PIXEL_TRUECOLOR_ALPHA: // truecolor + alpha
             s = pDraw->pPixels;
@@ -238,14 +238,14 @@ PNG_STATIC void PNGRGB565(PNGDRAW *pDraw, uint16_t *pPixels, int iEndiannes, uin
     int x, j;
     uint16_t usPixel, *pDest = pPixels;
     uint8_t c=0, a, *pPal, *s = pDraw->pPixels;
-    
+
     switch (pDraw->iPixelType) {
         case PNG_PIXEL_GRAY_ALPHA:
             for (x=0; x<pDraw->iWidth; x++) {
                 c = *s++; // gray level
                 a = *s++;
                 j = (a * c) >> 8; // multiply by the alpha
-                usPixel = usGrayTo565[j]; 
+                usPixel = usGrayTo565[j];
                 if (iEndiannes == PNG_RGB565_BIG_ENDIAN)
                     usPixel = __builtin_bswap16(usPixel);
                 *pDest++ = usPixel;
@@ -340,20 +340,20 @@ PNG_STATIC void PNGRGB565(PNGDRAW *pDraw, uint16_t *pPixels, int iEndiannes, uin
                            c <<= 1;
                        }
                        break;
-               } // switch on bpp 
+               } // switch on bpp
                return;
             }
             switch (pDraw->iBpp) {
                 case 8: // 8-bit palette also supports palette alpha
                     if (pDraw->iHasAlpha) { // use the alpha to modify the palette
                         for (x=0; x<pDraw->iWidth; x++) {
-                            int a;
+                            int alpha;
                             c = *s++;
-                            a = pDraw->pPalette[768+c]; // get alpha
+                            alpha = pDraw->pPalette[768+c]; // get alpha
                             pPal = &pDraw->pPalette[c * 3];
-                            usPixel = ((pPal[2] * a) >> 11); // blue
-                            usPixel |= (((pPal[1] * a) >> 10) << 5); // green
-                            usPixel |= (((pPal[0] * a) >> 11) << 11); // red
+                            usPixel = ((pPal[2] * alpha) >> 11); // blue
+                            usPixel |= (((pPal[1] * alpha) >> 10) << 5); // green
+                            usPixel |= (((pPal[0] * alpha) >> 11) << 11); // red
                             if (iEndiannes == PNG_RGB565_BIG_ENDIAN)
                                 usPixel = __builtin_bswap16(usPixel);
                             *pDest++ = usPixel;
@@ -424,7 +424,7 @@ PNG_STATIC void PNGRGB565(PNGDRAW *pDraw, uint16_t *pPixels, int iEndiannes, uin
             break;
         case PNG_PIXEL_TRUECOLOR_ALPHA: // truecolor + alpha
             if (u32Bkgd != 0xffffffff) { // user wants to blend it with a background color
-                uint32_t r, g, b, a;
+                uint32_t r, g, b, alpha;
                 uint32_t b_r, b_g, b_b;
                 b_r = u32Bkgd & 0xff; b_g = (u32Bkgd & 0xff00) >> 8;
                 b_b = (u32Bkgd >> 16) & 0xff;
@@ -432,17 +432,17 @@ PNG_STATIC void PNGRGB565(PNGDRAW *pDraw, uint16_t *pPixels, int iEndiannes, uin
                 u16Clr |= ((u32Bkgd & 0xfc00) >> 5);
                 u16Clr |= ((u32Bkgd & 0xf80000) >> 19);
                 for (x=0; x<pDraw->iWidth; x++) {
-                    r = s[0]; g = s[1]; b = s[2]; a = s[3];
-                    if (a == 0)
+                    r = s[0]; g = s[1]; b = s[2]; alpha = s[3];
+                    if (alpha == 0)
                         usPixel = u16Clr;
-                    else if (a == 255) { // fully opaque
+                    else if (alpha == 255) { // fully opaque
                         usPixel = (s[2] >> 3); // blue
                         usPixel |= ((s[1] >> 2) << 5); // green
                         usPixel |= ((s[0] >> 3) << 11); // red
                     } else { // mix the colors
-                        r = ((r * a) + (b_r * (255-a))) >> 8;
-                        g = ((g * a) + (b_g * (255-a))) >> 8;
-                        b = ((b * a) + (b_b * (255-a))) >> 8;
+                        r = ((r * alpha) + (b_r * (255-alpha))) >> 8;
+                        g = ((g * alpha) + (b_g * (255-alpha))) >> 8;
+                        b = ((b * alpha) + (b_b * (255-alpha))) >> 8;
                         usPixel = (b >> 3); // blue
                         usPixel |= ((g >> 2) << 5); // green
                         usPixel |= ((r >> 3) << 11); // red
@@ -516,7 +516,7 @@ PNG_STATIC int PNGParseInfo(PNGIMAGE *pPage)
 {
     uint8_t *s = pPage->ucFileBuf;
     int iBytesRead;
-    
+
     pPage->iHasAlpha = pPage->iInterlaced = 0;
     // Read a few bytes to just parse the size/pixel info
     iBytesRead = (*pPage->pfnRead)(&pPage->PNGFile, s, 32);
@@ -573,7 +573,7 @@ PNG_STATIC void DeFilter(uint8_t *pCurr, uint8_t *pPrev, int iWidth, int iPitch)
         iBpp = 1;
     else
         iBpp = iPitch / iWidth;
-    
+
     pPrev++; // skip filter of previous line
     switch (ucFilter) { // switch on filter type
         case PNG_FILTER_NONE:
@@ -683,7 +683,7 @@ PNG_STATIC int DecodePNG(PNGIMAGE *pPage, void *pUser, int iOptions)
     z_stream d_stream; /* decompression stream */
     uint8_t *s = pPage->ucFileBuf;
     struct inflate_state *state;
-    
+
     // Either the image buffer must be allocated or a draw callback must be set before entering
     if (pPage->pImage == NULL && pPage->pfnDraw == NULL) {
         pPage->iError = PNG_NO_BUFFER;
@@ -717,7 +717,7 @@ PNG_STATIC int DecodePNG(PNGIMAGE *pPage, void *pUser, int iOptions)
 //    else
 //        err = mz_inflateInit2(&d_stream, 15);
 #endif // FUTURE
-    
+
     iFileOffset = 8; // skip PNG file signature
     iOffset = 0; // internal buffer offset starts at 0
     // Read some data to start
@@ -759,14 +759,14 @@ PNG_STATIC int DecodePNG(PNGIMAGE *pPage, void *pUser, int iOptions)
                 if (iOptions & PNG_FAST_PALETTE) { // create a RGB565 palette
                     int i, iColors = 1 << pPage->ucBpp;
                     uint16_t usPixel, *d;
-                    uint8_t *s = pPage->ucPalette;
+                    uint8_t *palette_it = pPage->ucPalette;
                     d = (uint16_t *)&pPage->ucPixels[sizeof(pPage->ucPixels)-512];
                     for (i=0; i<iColors; i++) {
-                    usPixel = (s[2] >> 3); // blue
-                    usPixel |= ((s[1] >> 2) << 5); // green
-                    usPixel |= ((s[0] >> 3) << 11); // red
+                    usPixel = (palette_it[2] >> 3); // blue
+                    usPixel |= ((palette_it[1] >> 2) << 5); // green
+                    usPixel |= ((palette_it[0] >> 3) << 11); // red
                     *d++ = usPixel;
-                    s += 3;
+                    palette_it += 3;
                     }
                 }
                 break;
