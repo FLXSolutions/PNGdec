@@ -233,7 +233,7 @@ void s3_rgb565(uint8_t *pSrc, uint8_t *pDest, int iCount, bool bBigEndian);
 // handles all standard pixel types
 // written for simplicity, not necessarily performance
 //
-PNG_STATIC void PNGRGB565(PNGDRAW *pDraw, uint16_t *pPixels, int iEndiannes, uint32_t u32Bkgd, int iHasAlpha)
+PNG_STATIC void PNGRGB565(PNGDRAW *pDraw, uint16_t *pPixels, int iEndiannes, uint32_t u32Bkgd, int /*iHasAlpha*/)
 {
     int x, j;
     uint16_t usPixel, *pDest = pPixels;
