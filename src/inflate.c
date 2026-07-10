@@ -278,7 +278,7 @@ int ZEXPORT inflatePrime(z_streamp strm, int bits, int value)
    used for threaded applications, since the rewriting of the tables and virgin
    may not be thread-safe.
  */
-local void fixedtables(state) struct inflate_state FAR *state;
+local void fixedtables(struct inflate_state FAR * state)
 {
 #ifdef BUILDFIXED
   static int virgin = 1;
@@ -403,9 +403,7 @@ void makefixed() {
    output will fall in the output data, making match copies simpler and faster.
    The advantage may be dependent on the size of the processor's data caches.
  */
-local int updatewindow(strm, end, copy) z_streamp strm;
-const Bytef *end;
-unsigned copy;
+local int updatewindow(z_streamp strm, const Bytef * end, unsigned copy)
 {
   struct inflate_state FAR *state;
   unsigned dist;
@@ -1541,8 +1539,7 @@ int ZEXPORT inflateSyncPoint(z_streamp strm)
   return state->mode == STORED && state->bits == 0;
 }
 
-int ZEXPORT inflateCopy(dest, source) z_streamp dest;
-z_streamp source;
+int ZEXPORT inflateCopy(z_streamp dest, z_streamp source)
 {
   struct inflate_state FAR *state;
   struct inflate_state FAR *copy;
