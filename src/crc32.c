@@ -258,10 +258,7 @@ unsigned long ZEXPORT crc32(unsigned long crc, const unsigned char FAR * buf, uI
 #define DOLIT32 DOLIT4; DOLIT4; DOLIT4; DOLIT4; DOLIT4; DOLIT4; DOLIT4; DOLIT4
 
 /* ========================================================================= */
-local unsigned long crc32_little(crc, buf, len)
-    unsigned long crc;
-    const unsigned char FAR *buf;
-    z_size_t len;
+local unsigned long crc32_little(unsigned long  crc, const unsigned char FAR * buf, z_size_t len)
 {
     register z_crc_t c;
     register const z_crc_t FAR *buf4;
@@ -333,9 +330,7 @@ local unsigned long crc32_big(unsigned long crc, const unsigned char FAR * buf, 
 #define GF2_DIM 32      /* dimension of GF(2) vectors (length of CRC) */
 
 /* ========================================================================= */
-local unsigned long gf2_matrix_times(mat, vec)
-    unsigned long *mat;
-    unsigned long vec;
+local unsigned long gf2_matrix_times(unsigned long * mat, unsigned long  vec)
 {
     unsigned long sum;
 
