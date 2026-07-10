@@ -28,6 +28,7 @@
 #  endif /* !DYNAMIC_CRC_TABLE */
 #endif /* MAKECRCH */
 
+#include "zconf.h"
 #include "zutil.h"      /* for STDC and FAR definitions */
 
 /* Definitions for doing the crc four data bytes at a time. */

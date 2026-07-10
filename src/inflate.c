@@ -80,6 +80,8 @@
  * The history for versions after 1.2.0 are in ChangeLog in zlib distribution.
  */
 
+#include "zconf.h"
+#include "zutil.h"
 #include "inflate.h"
 #include "inffast.h"
 #include "inftrees.h"

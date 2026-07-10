@@ -19,6 +19,7 @@
 #  define ZLIB_INTERNAL
 #endif
 
+#include "zconf.h"
 #include "zlib.h"
 
 #if defined(STDC) && !defined(Z_SOLO)

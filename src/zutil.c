@@ -5,7 +5,9 @@
 
 /* @(#) $Id$ */
 
+#include "zconf.h"
 #include "zutil.h"
+
 //#ifndef Z_SOLO
 //#  include "gzguts.h"
 //#endif
